@@ -14,24 +14,24 @@ import java.util.*;
 public class Closure {
 
     public static String closure(Funktion F, String p) {
-        ArrayList<Abhaengigkeit> AbhaengigkeitenlisteC = F.getList();
+        ArrayList<Abhaengigkeit> abhlist = F.getList();
         String X = p;
         String Xx;
         String regex;
         do {
             Xx = X;
-            for (int i = 0; i < AbhaengigkeitenlisteC.size(); i++) {
+            for (int i = 0; i < abhlist.size(); i++) {
                 regex = ".*";
-                for (int g = 0; g < AbhaengigkeitenlisteC.get(i).linkeSeite.length(); g++) {
-                    regex = regex + AbhaengigkeitenlisteC.get(i).linkeSeite.charAt(g) + ".*";
+                for (int g = 0; g < abhlist.get(i).linkeSeite.length(); g++) {
+                    regex = regex + abhlist.get(i).linkeSeite.charAt(g) + ".*";
                 }
                 if (X.matches(regex)) {
-                    for (int j = 0; j < AbhaengigkeitenlisteC.get(i).rechteSeite.length(); j++) {
-                        regex = ".*" + AbhaengigkeitenlisteC.get(i).rechteSeite.charAt(j) + ".*";
+                    for (int j = 0; j < abhlist.get(i).rechteSeite.length(); j++) {
+                        regex = ".*" + abhlist.get(i).rechteSeite.charAt(j) + ".*";
                         if (X.matches(regex)) {
                             continue;
                         } else {
-                            X = X + AbhaengigkeitenlisteC.get(i).rechteSeite.charAt(j);
+                            X = X + abhlist.get(i).rechteSeite.charAt(j);
                         }
                     }
                 }

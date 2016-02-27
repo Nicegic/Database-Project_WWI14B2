@@ -21,7 +21,7 @@ public class Abhaengigkeit {
 
     @Override
     public String toString() {
-        return linkeSeite + "..." + rechteSeite;
+        return linkeSeite + "-->" + rechteSeite;
     }
 
 }

@@ -31,16 +31,16 @@ public class GUI extends JFrame implements ActionListener, KeyListener {
         content = new JPanel();
         content.setLayout(new GridLayout(2, 2, 10, 10));
         relation = new JTextArea("Hier bitte die Relation eingeben!");
-        abhaengigkeiten = new JTextArea("Hier bitte die AbhÃ¤ngigkeiten eingeben!");
+        abhaengigkeiten = new JTextArea("Hier bitte die Abhängigkeiten eingeben!");
         scroll1 = new JScrollPane(relation);
         scroll1.setAutoscrolls(true);
         relation.setLineWrap(true);
         scroll2 = new JScrollPane(abhaengigkeiten);
         scroll2.setAutoscrolls(true);
         abhaengigkeiten.setLineWrap(true);
-        solve = new JButton("Closure-Funktion ausfÃ¼hren");
+        solve = new JButton("Closure-Funktion ausführen");
         output = new JLabel("Hier werden die Ergebnisse angezeigt.");
-        hull = new JTextField("Hier die gewÃ¼nschte HÃ¼lle eingeben!");
+        hull = new JTextField("Hier die gewünschte Hülle eingeben!");
         content.add(output);
         content.add(scroll1);
         content.add(scroll2);
@@ -48,7 +48,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener {
         c.add(content, BorderLayout.CENTER);
         c.add(solve, BorderLayout.SOUTH);
         solve.addActionListener(this);
-        pack();
+        setSize(500,300);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         relation.addKeyListener(this);
