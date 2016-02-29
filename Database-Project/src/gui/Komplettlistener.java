@@ -16,16 +16,16 @@ import data.*;
  */
 class Komplettlistener implements ActionListener {
 
-    JTextArea function, relation, output;
+    JTextArea function, output;
     JButton add, delete, execute;
-    JTextField left, right;
+    JTextField left, right, relation;
     ArrayList<String> attlist;
     JCheckBox closure, member, overlay;
     Funktion f;
     boolean relationchanged = true;
     String relationlast, huelle;
 
-    public Komplettlistener(JTextArea function, JTextArea relation, JTextArea output,
+    public Komplettlistener(JTextArea function, JTextField relation, JTextArea output,
             JButton add, JButton delete, JButton execute, JTextField left, JTextField right,
             JCheckBox closure, JCheckBox member, JCheckBox overlay) {
         this.function = function;

@@ -7,7 +7,6 @@ package gui;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
-import javax.swing.JTextArea;
 import java.awt.event.*;
 
 /**
@@ -18,11 +17,11 @@ class NiceToHaveListener implements KeyListener {
 
     JButton add;
     JTextField right;
-    JTextArea relation;
+    JTextField relation;
     boolean firsttype=true;
     final String hint = "\n (Format der Relation: R={a,b,c,d,e,f,g,h})";
 
-    public NiceToHaveListener(JButton add, JTextField right, JTextArea relation) {
+    public NiceToHaveListener(JButton add, JTextField right, JTextField relation) {
         this.add = add;
         this.right = right;
         this.relation = relation;
