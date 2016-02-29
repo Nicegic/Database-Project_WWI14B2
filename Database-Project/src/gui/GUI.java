@@ -14,7 +14,10 @@ import java.awt.*;
 import java.awt.event.*;
 import data.Extractor;
 
-public class GUI extends JFrame implements ActionListener, KeyListener {
+
+//Klasse ist obsolet, wird gelöscht, sobald die neue GUI komplett eingebunden ist!
+
+/*public class GUI extends JFrame implements ActionListener, KeyListener {
 
     JButton solve;
     JTextArea relation, abhaengigkeiten;
@@ -25,7 +28,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener {
     JTextField hull;
     boolean relationfirst, abhaengigkeitenfirst, hullfirst;
 
-    public GUI() {
+    /*public GUI() {
         relationfirst = abhaengigkeitenfirst = hullfirst = true;
         c = getContentPane();
         content = new JPanel();
@@ -88,4 +91,4 @@ public class GUI extends JFrame implements ActionListener, KeyListener {
             hullfirst = false;
         }
     }
-}
+}*/

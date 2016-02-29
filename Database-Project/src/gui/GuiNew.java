@@ -30,6 +30,7 @@ public class GuiNew extends JFrame {
     int row;
     Komplettlistener kl;
     NiceToHaveListener nthl;
+    ButtonGroup bg;
 
     public GuiNew() {
         row = 0;
@@ -137,7 +138,7 @@ public class GuiNew extends JFrame {
         gbc.gridheight = 5;
         c.add(j3, gbc);
         function.setEditable(false);
-        function.setText("Bitte trage in die beiden Felder unten deine Abhängigkeiten der Funktion ein und füge sie"
+        function.setText("Bitte trage ZUERST die Relation in das rechte Feld ein. Anschließend in die beiden Felder unten deine Abhängigkeiten der Funktion ein und füge sie"
                 + " mit Klick auf 'hinzufügen' zur Funktion hinzu. Mit löschen kann jeweils die letzte Abhängigkeit"
                 + " gelöscht werden.");
         output.setEditable(false);
@@ -149,6 +150,10 @@ public class GuiNew extends JFrame {
         add.addActionListener(kl);
         delete.addActionListener(kl);
         execute.addActionListener(kl);
+        bg=new ButtonGroup();
+        bg.add(closure);
+        bg.add(member);
+        bg.add(overlay);
         setLocation(200, 100);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

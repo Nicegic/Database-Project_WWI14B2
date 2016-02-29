@@ -52,7 +52,7 @@ public class Membership {
             if (member(G, F.getAbhaengigkeit(i))) { // Überprüfung ob die eben entfernte Abhängigkeit
                 //noch einmal vorhanden ist, wenn ja bleibt die gelöschte Abhängigkeit gelöscht
             } else {
-                G.addAbhaengigkeit(aah);//ist sie eindeutig, wird die Abhängigkeit wieder eingefügt
+                try{G.addAbhaengigkeit(aah);}catch(NotInAlphabetException niae){}
             }
         }
         return G;
@@ -81,12 +81,12 @@ public class Membership {
                     rechts=rechts+G.getAbhaengigkeit(i).rechteSeite.charAt(h);
                 }
                 aah2 = new Abhaengigkeit(G.getAbhaengigkeit(i).linkeSeite, G.getAbhaengigkeit(i).rechteSeite);
-                G.addAbhaengigkeit(aah2);
+                try{G.addAbhaengigkeit(aah2);}catch(NotInAlphabetException niae){}
                 if(closure(G, G.getAbhaengigkeit(i).linkeSeite).matches(G.getAbhaengigkeit(i).rechteSeite)){ //b ⊆ CLOSURE(F − {X → Y} ∪ X → Y − b ,X)
                     //then ersetze X → Y durch X → (Y − b)
                 }
                 else{
-                    G.addAbhaengigkeit(aah);
+                    try{G.addAbhaengigkeit(aah);}catch(NotInAlphabetException niae){}
                     G.removeAbh(aah2, G);
                 }
             }//end for

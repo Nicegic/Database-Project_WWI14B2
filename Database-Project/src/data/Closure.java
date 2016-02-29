@@ -13,9 +13,9 @@ import java.util.*;
  */
 public class Closure {
 
-    public static String closure(Funktion F, String p) {
+    public static String closure(Funktion F, String huelle) {
         ArrayList<Abhaengigkeit> abhlist = F.getList();
-        String X = p;
+        String X = huelle;
         String Xx;
         String regex;
         do {
