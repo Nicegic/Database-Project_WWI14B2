@@ -18,16 +18,17 @@ class Komplettlistener implements ActionListener {
 
     JTextArea function, output;
     JButton add, delete, execute;
-    JTextField left, right, relation;
+    JTextField left, right, relation, closurefield;
     ArrayList<String> attlist;
     JCheckBox closure, member, overlay;
     Funktion f;
     boolean relationchanged = true;
     String relationlast, huelle;
+    JComboBox<Object> memberbox;
 
     public Komplettlistener(JTextArea function, JTextField relation, JTextArea output,
             JButton add, JButton delete, JButton execute, JTextField left, JTextField right,
-            JCheckBox closure, JCheckBox member, JCheckBox overlay) {
+            JCheckBox closure, JCheckBox member, JCheckBox overlay, JTextField closurefield, JComboBox memberbox) {
         this.function = function;
         this.relation = relation;
         this.output = output;
@@ -39,6 +40,8 @@ class Komplettlistener implements ActionListener {
         this.closure = closure;
         this.member = member;
         this.overlay = overlay;
+        this.closurefield = closurefield;
+        this.memberbox = memberbox;
         f = new Funktion();
         relationlast = null;
         huelle = null;
@@ -93,7 +96,9 @@ class Komplettlistener implements ActionListener {
             } else {
                 sb.append("Die Funktion beinhaltet momentan folgende Abhängigkeiten: \n");
                 ArrayList<Abhaengigkeit> abhlist = f.getAbhaengigkeiten();
+                memberbox.removeAllItems();
                 for (int i = 0; i < abhlist.size(); i++) {
+                    memberbox.addItem(abhlist.get(i));
                     sb.append(abhlist.get(i) + " \n");
                 }
             }
@@ -117,23 +122,37 @@ class Komplettlistener implements ActionListener {
             System.out.println(iee.getMessage());
         }
         if (attlist != null) {
-            EingabeHuelle eh = new EingabeHuelle(this);
+            huelle = closurefield.getText();
             while (huelle == null) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException inte) {
                 }
             }
-            String result = Closure.closure(f, huelle);
+            String result = Membership.closure(f, huelle);
             output.setText(result);
         }
     }
 
     private void doMember() {
-        //TODO supply code
+        try {
+            attlist = new Extractor().buildRelation(relation.getText());
+        } catch (IllegalEntryException iee) {
+            System.out.println(iee.getMessage());
+        }
+            int i = memberbox.getSelectedIndex();
+            boolean result = Membership.member(f, f.getAbhaengigkeit(i));
+            output.setText(""+result);
+        
     }
 
     private void doOverlay() {
-        //TODO supply code
+        f=Membership.reducedCover(f);
+        String abh="";
+        for(int i=0; i<f.getAbhSize();i++){
+            abh = abh + f.getAbhaengigkeit(i)+"\n";
+        }
+        function.setText("Neue Abhaengigkeiten:\n"+abh);
+        output.setText("überdeckung durgeführt");
     }
 }

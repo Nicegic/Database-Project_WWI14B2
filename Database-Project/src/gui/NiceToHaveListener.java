@@ -15,16 +15,19 @@ import java.awt.event.*;
  */
 class NiceToHaveListener implements KeyListener {
 
-    JButton add;
+    JButton add, execute;
     JTextField right;
-    JTextField relation;
+    JTextField relation, closurefield;
     boolean firsttype=true;
+    boolean firsttypecf=true;
     final String hint = "\n (Format der Relation: R={a,b,c,d,e,f,g,h})";
 
-    public NiceToHaveListener(JButton add, JTextField right, JTextField relation) {
+    public NiceToHaveListener(JButton add, JButton execute, JTextField closurefield, JTextField right, JTextField relation) {
         this.add = add;
         this.right = right;
         this.relation = relation;
+        this.closurefield = closurefield;
+        this.execute = execute;
     }
 
     public void keyPressed(KeyEvent ke) {
@@ -37,6 +40,15 @@ class NiceToHaveListener implements KeyListener {
             if(firsttype){
                 relation.setText("");
                 firsttype=false;
+            }
+        }
+        if (ke.getComponent().equals(closurefield)) {
+            if(firsttypecf){
+                closurefield.setText("");
+                firsttypecf=false;
+            }
+            if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                execute.doClick();
             }
         }
     }

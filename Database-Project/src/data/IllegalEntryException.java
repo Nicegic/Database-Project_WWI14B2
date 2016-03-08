@@ -9,16 +9,12 @@ package data;
  *
  * @author Nicolas
  */
-public class IllegalEntryException extends IllegalArgumentException{
+public class IllegalEntryException extends Exception{
     String message;
     public IllegalEntryException(){
         super();
     }
     public IllegalEntryException(String message){
         super(message);
-    }
-    @Override
-    public String getMessage(){
-        return message;
     }
 }

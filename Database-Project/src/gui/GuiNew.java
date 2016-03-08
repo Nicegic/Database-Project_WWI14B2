@@ -11,6 +11,8 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -20,7 +22,7 @@ public class GuiNew extends JFrame {
 
     GridBagLayout gbl;
     GridBagConstraints gbc;
-    JTextField left, right, relation;
+    JTextField left, right, relation, closurefield;
     JLabel arrow, desc1, desc2, relationbeg, relationend;
     JScrollPane j1, j2, j3;
     JTextArea function, output;
@@ -31,6 +33,7 @@ public class GuiNew extends JFrame {
     Komplettlistener kl;
     NiceToHaveListener nthl;
     ButtonGroup bg;
+    JComboBox<Object> memberbox;
 
     public GuiNew() {
         row = 0;
@@ -48,9 +51,11 @@ public class GuiNew extends JFrame {
         add = new JButton("hinzufügen");
         delete = new JButton("löschen");
         execute = new JButton("ausführen");
-        overlay = new JCheckBox("nicht-redundante minimale Überdeckung");
+        overlay = new JCheckBox("reduzierte Überdeckung");
         closure = new JCheckBox("Closure-Funktion (Hülle bestimmen)");
         member = new JCheckBox("Membership-Algorithmus durchführen");
+        closurefield = new JTextField("Test ClosureLabel");
+        memberbox = new JComboBox<Object>();
         relationbeg = new JLabel("R={");
         relationend = new JLabel("}");
         relationbeg.setHorizontalTextPosition(JLabel.RIGHT);
@@ -81,7 +86,7 @@ public class GuiNew extends JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
         c.add(desc1, gbc);
         gbc.gridwidth=2;
-        gbc.gridx = 3;
+        gbc.gridx = 4;
         c.add(desc2, gbc);
         row++;
         gbc.gridx = 0;
@@ -89,14 +94,14 @@ public class GuiNew extends JFrame {
         gbc.gridheight = 2;
         gbc.gridwidth=3;
         c.add(j2, gbc);
-        gbc.gridx = 3;
+        gbc.gridx = 4;
         gbc.gridy = row;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         c.add(relationbeg, gbc);
-        gbc.gridx=4;
-        c.add(relation, gbc);
         gbc.gridx=5;
+        c.add(relation, gbc);
+        gbc.gridx=6;
         c.add(relationend, gbc);
         row += 2;
         gbc.ipady = 0;
@@ -110,9 +115,9 @@ public class GuiNew extends JFrame {
         c.add(arrow, gbc);
         gbc.gridx = 2;
         c.add(right, gbc);
-        gbc.gridx = 3;
-        c.add(add, gbc);
         gbc.gridx = 4;
+        c.add(add, gbc);
+        gbc.gridx = 5;
         c.add(delete, gbc);
         row++;
         gbc.gridwidth = 3;
@@ -120,10 +125,17 @@ public class GuiNew extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = row;
         c.add(closure, gbc);
+        gbc.gridx = 3;
+        gbc.gridwidth =1;
+        c.add(closurefield, gbc);
         row++;
         gbc.gridx = 0;
         gbc.gridy = row;
+        gbc.gridwidth = 3;
         c.add(member, gbc);
+        gbc.gridx = 3;
+        gbc.gridwidth = 1;
+        c.add(memberbox, gbc);
         row++;
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -133,7 +145,7 @@ public class GuiNew extends JFrame {
         gbc.gridy = row;
         c.add(execute, gbc);
         row++;
-        gbc.gridx = 3;
+        gbc.gridx = 4;
         gbc.gridy = 4;
         gbc.gridwidth = 4;
         gbc.gridheight = 5;
@@ -144,10 +156,46 @@ public class GuiNew extends JFrame {
                 + " gelöscht werden.");
         output.setEditable(false);
         output.setText("Hier werden alle möglichen Outputs stehen.");
-        kl = new Komplettlistener(function, relation, output, add, delete, execute, left, right, closure, member, overlay);
-        nthl = new NiceToHaveListener(add, right, relation);
+        kl = new Komplettlistener(function, relation, output, add, delete, execute, left, right, closure, member, overlay, closurefield, memberbox);
+        closurefield.setVisible(false);
+        memberbox.setVisible(false);
+        ChangeListener changeListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent changEvent) {
+              AbstractButton aButton = (AbstractButton)changEvent.getSource();
+              ButtonModel aModel = aButton.getModel();
+              boolean armed = aModel.isArmed();
+              boolean pressed = aModel.isPressed();
+              boolean selected = aModel.isSelected();
+              if(selected){
+                  if(aButton.getName().equals("closure")){
+                      memberbox.setVisible(false);
+                      closurefield.setVisible(true);
+                  }
+                  else if(aButton.getName().equals("member")){
+                      closurefield.setVisible(false);
+                      memberbox.setVisible(true);
+                  }
+                  else if(aButton.getName().equals("overlay")){
+                      closurefield.setVisible(false);
+                      memberbox.setVisible(false);
+                  }
+                  else{
+                      System.out.println("Nichts ist selected oder Fehler");
+                  }
+              }
+            }
+        };
+        
+        closure.setName("closure");
+        member.setName("member");
+        overlay.setName("overlay");
+        closure.addChangeListener(changeListener);
+        member.addChangeListener(changeListener);
+        overlay.addChangeListener(changeListener);
+        nthl = new NiceToHaveListener(add, execute, closurefield, right, relation);
         right.addKeyListener(nthl);
         relation.addKeyListener(nthl);
+        closurefield.addKeyListener(nthl);
         add.addActionListener(kl);
         delete.addActionListener(kl);
         execute.addActionListener(kl);

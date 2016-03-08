@@ -36,21 +36,12 @@ public class Extractor {
         }
         for (int i = 0; i < c.size(); i++) {
             actualc = c.get(i);
-            if (actualc == '{') {
-                if (alreadybegun == true) {
-                    throw new IllegalEntryException();
-                } else {
-                    beginning = i + 1;
-                    alreadybegun = true;
-                }
-            }
             if (actualc == ' '){
                 c.remove(i);
                 i--;
             }
-            if (actualc == '}') {
-                end = i;
-                break;
+            if(i==c.size()-1){
+                end = i+1;
             }
         }
         relationS = relationS.substring(beginning, end);
@@ -61,10 +52,6 @@ public class Extractor {
         while (st.hasMoreTokens()) {
             relation.add(st.nextToken());
         }
-        /*for (int i = 0; i < relation.size(); i++) {   //Ausgabe der einzelnen Elemente der Relation
-            System.out.println(relation.get(i));
-            relation.get(i);
-        }*/
             return relation;
     }
 }
