@@ -10,16 +10,11 @@ package data;
  * @author Nicolas
  */
 public class NotInAlphabetException extends Exception{
-    String message;
     public NotInAlphabetException(){
         super();
     }
     
     public NotInAlphabetException(String message){
         super(message);
-    }
-    
-    public String getMessage(){
-        return message;
     }
 }

@@ -10,63 +10,45 @@ package data;
  * @author Nicolas
  */
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class Funktion {
 
-    ArrayList<String> attlist = new ArrayList<String>();
-    ArrayList<Abhaengigkeit> abhlist = new ArrayList<Abhaengigkeit>();
+    ConcurrentSkipListSet<String> attlist = new ConcurrentSkipListSet<>();
+    HashSet<Abhaengigkeit> abhlist = new HashSet();
     String attribut;
-    StringBuffer alphabetsb = new StringBuffer();
-    String alphabet;
 
     public Funktion() {
     }
 
-    public Funktion(ArrayList<String> attlist, ArrayList<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
+    public Funktion(ConcurrentSkipListSet<String> attlist, HashSet<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
         this.attlist = attlist;
         setAlphabet(this.attlist);
         addAbhaengigkeiten(abhaengigkeiten);
     }
 
-    public void setAlphabet(ArrayList<String> attlist) {
-        alphabetsb = new StringBuffer();
-        for (int i = 0; i < attlist.size(); i++) {
-            alphabetsb.append(attlist.get(i));
-        }
-        alphabet = new String(alphabetsb);
+    public void setAlphabet(ConcurrentSkipListSet<String> attlist) {
+        this.attlist = attlist;
     }
 
-    public void addAbhaengigkeiten(ArrayList<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
-        for (int i = 0; i < abhaengigkeiten.size(); i++) {
-            addAbhaengigkeit(abhaengigkeiten.get(i));
+    public void addAbhaengigkeiten(HashSet<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
+        Iterator it = abhaengigkeiten.iterator();
+        while(it.hasNext()){
+            addAbhaengigkeit((Abhaengigkeit)it.next());
         }
     }
 
-    public void addAbhaengigkeit(Abhaengigkeit abh) throws NotInAlphabetException {
-        boolean left;
-        boolean right;
-        right = left = true;
-        for (int j = 0; j < abh.linkeSeite.length(); j++) {
-            if (!alphabet.contains("" + abh.linkeSeite.charAt(j))) {
-                left = false;
-            }
-        }
-        for (int j = 0; j < abh.rechteSeite.length(); j++) {
-            if (!alphabet.contains("" + abh.rechteSeite.charAt(j))) {
-                right = false;
-            }
-        }
-        if (!left) {
-            throw new NotInAlphabetException("Linke Seite der AbhÃ¤ngigkeit nicht in der Relation vorhanden!");
-        } else if (!right) {
-            throw new NotInAlphabetException("Rechte Seite der AbhÃ¤ngigkeit nicht in der Relation vorhanden!");
-        } else {
-            abhlist.add(abh);
-        }
+    public void setAbhaengigkeiten(HashSet<Abhaengigkeit> abhaengigkeiten) {
+        abhlist.clear();
+        abhlist.addAll(abhaengigkeiten);
     }
 
-    public ArrayList<Abhaengigkeit> getList() {
-        return abhlist;
+    public void addAbhaengigkeit(Abhaengigkeit abh) {
+        abhlist.add(abh);
+    }
+    
+    public ConcurrentSkipListSet<String> getAlphabet(){
+        return attlist;
     }
 
     public int getAttSize() {
@@ -78,23 +60,26 @@ public class Funktion {
     }
 
     public Abhaengigkeit getAbhaengigkeit(int i) {
-        return abhlist.get(i);
+        int k = 0;
+        Iterator it = abhlist.iterator();
+        while (k < i) {
+            it.next();
+        }
+        return (Abhaengigkeit) it.next();
     }
 
-    public Abhaengigkeit removeAbh(Abhaengigkeit abh, Funktion f) {
-        Abhaengigkeit aah = null;
-        for (int i = 0; i < f.getAbhSize(); i++) {
-            if (abh.equals(f.getAbhaengigkeit(i))) {
-                aah = f.getAbhaengigkeit(i);
-                abhlist.remove(abh);
-            }
-        }
-        return aah;
+    public void removeAbh(Abhaengigkeit abh, Funktion f) {
+        abhlist.remove(abh);
     }
 
     public void removeAbhaengigkeit() {
-        if (abhlist.size() > 0) {
-            abhlist.remove(abhlist.size() - 1);
+        Abhaengigkeit abh = null;
+        Iterator it = abhlist.iterator();
+        while (it.hasNext()) {
+            abh = (Abhaengigkeit) it.next();
+        }
+        if (abh != null) {
+            abhlist.remove(abh);
         }
     }
 
@@ -103,15 +88,11 @@ public class Funktion {
     }
 
     public Funktion copy() {
-        ArrayList<Abhaengigkeit> vabhlist = new ArrayList();
-        ArrayList<String> vattlist = new ArrayList();
+        HashSet<Abhaengigkeit> vabhlist = new HashSet();
+        ConcurrentSkipListSet<String> vattlist = new ConcurrentSkipListSet();
         Funktion f = null;
-        for (int i = 0; i < attlist.size(); i++) {
-            vattlist.add(attlist.get(i));
-        }
-        for (int i = 0; i < abhlist.size(); i++) {
-            vabhlist.add(abhlist.get(i));
-        }
+        vabhlist.addAll(abhlist);
+        vattlist.addAll(attlist);
         try {
             f = new Funktion(vattlist, vabhlist);
             return f;
@@ -120,7 +101,7 @@ public class Funktion {
         }
     }
 
-    public ArrayList<Abhaengigkeit> getAbhaengigkeiten() {
+    public HashSet<Abhaengigkeit> getAbhaengigkeiten() {
         return abhlist;
     }
 }

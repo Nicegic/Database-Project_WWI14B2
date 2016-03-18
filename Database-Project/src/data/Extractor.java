@@ -9,11 +9,12 @@ package data;
  *
  * @author Nicolas
  */
+import data.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class Extractor {
 
-    int beginning, end;
     String huelle;
     StringTokenizer st;
 
@@ -21,37 +22,21 @@ public class Extractor {
         this.huelle = huelle;
     }
 
-    public ArrayList<String> buildRelation(String relationS) throws IllegalEntryException {
-        ArrayList<String> relation;
-        boolean alreadybegun = false;
-        relation = new ArrayList<>();
-        beginning = end = 0;
-        char[] cc;
-        char actualc;
-        cc = new char[relationS.length()];
-        relationS.getChars(0, relationS.length(), cc, 0);
-        ArrayList<Character> c = new ArrayList();
-        for(int i=0;i<cc.length;i++){
-            c.add(cc[i]);
+    public ConcurrentSkipListSet<String> buildRelation(String relationS) throws IllegalEntryException {
+        ConcurrentSkipListSet<String> relation;
+        relation = new ConcurrentSkipListSet();
+        if (relationS.length() < 2) {
+            throw new IllegalEntryException("Die Relation muss mindestens 2 Elemente enthalten!");
         }
-        for (int i = 0; i < c.size(); i++) {
-            actualc = c.get(i);
-            if (actualc == ' '){
-                c.remove(i);
-                i--;
+        st = new StringTokenizer(relationS, ", ");
+        while(st.hasMoreTokens()){
+            StringBuffer s = new StringBuffer(st.nextToken());
+            for(int i=0;i<s.length();i++){
+                if(s.charAt(i)==' ')
+                    s.deleteCharAt(i);
             }
-            if(i==c.size()-1){
-                end = i+1;
-            }
+            relation.add(new String(s));
         }
-        relationS = relationS.substring(beginning, end);
-        if(relationS.length()<2){
-            throw new IllegalEntryException("Die Relation muss mindestens 2 Elemente beinhalten!");
-        }
-        st = new StringTokenizer(relationS, ",");
-        while (st.hasMoreTokens()) {
-            relation.add(st.nextToken());
-        }
-            return relation;
+        return relation;
     }
 }

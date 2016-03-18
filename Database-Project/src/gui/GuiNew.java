@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import javax.swing.*;
@@ -11,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -26,7 +19,7 @@ public class GuiNew extends JFrame {
     JLabel arrow, desc1, desc2, relationbeg, relationend;
     JScrollPane j1, j2, j3;
     JTextArea function, output;
-    JButton add, delete, execute;
+    JButton add, delete, execute, addrelation;
     Container c;
     JCheckBox closure, member, overlay;
     int row;
@@ -51,11 +44,12 @@ public class GuiNew extends JFrame {
         add = new JButton("hinzufügen");
         delete = new JButton("löschen");
         execute = new JButton("ausführen");
+        addrelation = new JButton("speichern");
         overlay = new JCheckBox("reduzierte Überdeckung");
         closure = new JCheckBox("Closure-Funktion (Hülle bestimmen)");
         member = new JCheckBox("Membership-Algorithmus durchführen");
         closurefield = new JTextField("Test ClosureLabel");
-        memberbox = new JComboBox<Object>();
+        memberbox = new JComboBox<>();
         relationbeg = new JLabel("R={");
         relationend = new JLabel("}");
         relationbeg.setHorizontalTextPosition(JLabel.RIGHT);
@@ -103,7 +97,11 @@ public class GuiNew extends JFrame {
         c.add(relation, gbc);
         gbc.gridx=6;
         c.add(relationend, gbc);
-        row += 2;
+        row++;
+        gbc.gridx=5;
+        gbc.gridy = row;
+        c.add(addrelation, gbc);
+        row ++;
         gbc.ipady = 0;
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -151,61 +149,39 @@ public class GuiNew extends JFrame {
         gbc.gridheight = 5;
         c.add(j3, gbc);
         function.setEditable(false);
-        function.setText("Bitte trage ZUERST die Relation in das rechte Feld ein. Anschließend in die beiden Felder unten deine Abhängigkeiten der Funktion ein und füge sie"
+        function.setText("Bitte trage die Relation in das rechte Feld ein, anschließend in die beiden Felder unten deine Abhängigkeiten der Funktion ein und füge sie"
                 + " mit Klick auf 'hinzufügen' zur Funktion hinzu. Mit löschen kann jeweils die letzte Abhängigkeit"
                 + " gelöscht werden.");
         output.setEditable(false);
+        left.setEditable(false);
+        right.setEditable(false);
         output.setText("Hier werden alle möglichen Outputs stehen.");
-        kl = new Komplettlistener(function, relation, output, add, delete, execute, left, right, closure, member, overlay, closurefield, memberbox);
+        kl = new Komplettlistener(function, relation, output, add, delete, execute, addrelation, left, right, closure, member, overlay, closurefield, memberbox);
         closurefield.setVisible(false);
         memberbox.setVisible(false);
-        ChangeListener changeListener = new ChangeListener() {
-            public void stateChanged(ChangeEvent changEvent) {
-              AbstractButton aButton = (AbstractButton)changEvent.getSource();
-              ButtonModel aModel = aButton.getModel();
-              boolean armed = aModel.isArmed();
-              boolean pressed = aModel.isPressed();
-              boolean selected = aModel.isSelected();
-              if(selected){
-                  if(aButton.getName().equals("closure")){
-                      memberbox.setVisible(false);
-                      closurefield.setVisible(true);
-                  }
-                  else if(aButton.getName().equals("member")){
-                      closurefield.setVisible(false);
-                      memberbox.setVisible(true);
-                  }
-                  else if(aButton.getName().equals("overlay")){
-                      closurefield.setVisible(false);
-                      memberbox.setVisible(false);
-                  }
-                  else{
-                      System.out.println("Nichts ist selected oder Fehler");
-                  }
-              }
-            }
-        };
-        
+        bg=new ButtonGroup();
+        bg.add(closure);
+        bg.add(member);
+        bg.add(overlay);
+        CheckBoxListener cbl = new CheckBoxListener(memberbox, closurefield, this, bg, closure, member, overlay);
         closure.setName("closure");
         member.setName("member");
         overlay.setName("overlay");
-        closure.addChangeListener(changeListener);
-        member.addChangeListener(changeListener);
-        overlay.addChangeListener(changeListener);
-        nthl = new NiceToHaveListener(add, execute, closurefield, right, relation);
+        closure.addActionListener(cbl);
+        member.addActionListener(cbl);
+        overlay.addActionListener(cbl);
+        nthl = new NiceToHaveListener(add, execute, addrelation, closurefield, left, right, relation);
         right.addKeyListener(nthl);
         relation.addKeyListener(nthl);
         closurefield.addKeyListener(nthl);
         add.addActionListener(kl);
         delete.addActionListener(kl);
         execute.addActionListener(kl);
-        bg=new ButtonGroup();
-        bg.add(closure);
-        bg.add(member);
-        bg.add(overlay);
+        addrelation.addActionListener(kl);
         setLocation(200, 100);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        bg.clearSelection();
     }
 }
