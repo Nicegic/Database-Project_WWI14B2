@@ -27,8 +27,10 @@ public class Abhaengigkeit {
     }
 
     public Abhaengigkeit(ConcurrentSkipListSet<String> links, ConcurrentSkipListSet<String> rechts) {
-        this.links = links;
-        this.rechts = rechts;
+        this.links = new ConcurrentSkipListSet();
+        this.links.addAll(links);
+        this.rechts = new ConcurrentSkipListSet();
+        this.rechts.addAll(rechts);
     }
 
     public Abhaengigkeit(String links, String rechts, ConcurrentSkipListSet<String> alphabet) throws NotInAlphabetException {

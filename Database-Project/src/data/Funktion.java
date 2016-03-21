@@ -64,6 +64,7 @@ public class Funktion {
         Iterator it = abhlist.iterator();
         while (k < i) {
             it.next();
+            k++;
         }
         return (Abhaengigkeit) it.next();
     }
