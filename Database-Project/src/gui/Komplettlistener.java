@@ -33,6 +33,7 @@ class Komplettlistener implements ActionListener {
     boolean firsttime;
     String relationlast, huelle;
     JComboBox<Object> memberbox;
+    Membership m = new Membership();
 
     public Komplettlistener(JTextArea function, JTextField relation, JTextArea output,
             JButton add, JButton delete, JButton execute, JButton addrelation, JTextField left, JTextField right,
@@ -127,6 +128,8 @@ class Komplettlistener implements ActionListener {
     }
 
     private void doClosure() {
+        output.setText("");
+        m.getOutput(output);
         if (attlist != null) {
             huelle = closurefield.getText();
             if (huelle == null || huelle == "") {
@@ -141,28 +144,32 @@ class Komplettlistener implements ActionListener {
                 output.setText("Bitte eine gültige Hülle eingeben!");
                 return;
             }
-            HashSet<String> result = Membership.closure(f, abh.getLeft());
+            HashSet<String> result = m.closure(f, abh.getLeft());
             StringBuffer sb = new StringBuffer();
             Iterator it = result.iterator();
-            output.setText("Das Ergebnis der Closure-Funktion ist: "+result.toString());
+            output.setText(output.getText()+"\nDas Ergebnis der Closure-Funktion ist: "+result.toString());
         }
     }
 
     private void doMember() {
         int i = memberbox.getSelectedIndex();
-        boolean result = Membership.member(f, f.getAbhaengigkeit(i));
-        output.setText("" + result);
+        output.setText("");
+        m.getOutput(output);
+        boolean result = m.member(f, f.getAbhaengigkeit(i));
+        output.setText(output.getText()+"\n"+ result);
 
     }
 
     private void doOverlay() {
-        Funktion g=Membership.reducedCover(f);
+        output.setText("");
+        m.getOutput(output);
+        Funktion g=m.reducedCover(f);
         String abh = "";
         for (int i = 0; i < g.getAbhSize(); i++) {
             abh = abh + g.getAbhaengigkeit(i) + "\n";
         }
         function.setText("Neue Abhaengigkeiten:\n" + abh);
-        output.setText("überdeckung durgeführt");
+        output.setText(output.getText()+"\nÜberdeckung durgeführt");
     }
 
     private void buildRelation() throws IllegalEntryException {
