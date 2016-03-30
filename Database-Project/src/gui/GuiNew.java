@@ -15,8 +15,8 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
 
     GridBagLayout gbl;                  //Diverse Container zum Arrangieren der Felder
     GridBagConstraints gbc;
-    JTextField left, right, relation, closurefield;
-    JLabel arrow, desc1, desc2, relationbeg, relationend;
+    JTextField left, right, relation, closurefield, memberleft, memberright;
+    JLabel arrow, desc1, desc2, relationbeg, relationend, memberarrow;
     JScrollPane j1, j2, j3;
     JTextArea function, output;
     JButton add, delete, execute, addrelation;
@@ -26,7 +26,6 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
     Komplettlistener kl;
     NiceToHaveListener nthl;
     ButtonGroup bg;
-    JComboBox<Object> memberbox;
 
     public GuiNew() {       //Initialisierung der GUI
         row = 0;
@@ -37,8 +36,11 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         c.setLayout(gbl);
         left = new JTextField();
         right = new JTextField();
+        relation = new JTextField();
+        memberleft = new JTextField();
+        memberright = new JTextField();
         arrow = new JLabel("-- >");
-        relation = new JTextField("");
+        memberarrow = new JLabel("-- >");
         function = new JTextArea("");
         output = new JTextArea("");
         add = new JButton("hinzufügen");
@@ -48,8 +50,7 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         overlay = new JCheckBox("reduzierte Überdeckung");
         closure = new JCheckBox("Closure-Funktion (Hülle bestimmen)");
         member = new JCheckBox("Membership-Algorithmus durchführen");
-        closurefield = new JTextField("mögl. Schlüsselattribut");
-        memberbox = new JComboBox<>();
+        closurefield = new JTextField("mögl. Schlüssel");
         relationbeg = new JLabel("R={");
         relationend = new JLabel("}");
         relationbeg.setHorizontalTextPosition(JLabel.RIGHT);
@@ -65,11 +66,14 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         output.setWrapStyleWord(true);
         j2.setPreferredSize(new Dimension(200, 84));
         j3.setPreferredSize(new Dimension(400, 150));
-        relation.setPreferredSize(new Dimension(200,27));
-        left.setPreferredSize(new Dimension(75,27));
-        right.setPreferredSize(new Dimension(75,27));
-        arrow.setPreferredSize(new Dimension(25,27));
-        arrow.setHorizontalTextPosition(JLabel.CENTER);
+        relation.setPreferredSize(new Dimension(200, 27));
+        left.setPreferredSize(new Dimension(75, 27));
+        right.setPreferredSize(new Dimension(75, 27));
+        arrow.setPreferredSize(new Dimension(25, 27));
+        closurefield.setPreferredSize(new Dimension(75, 27));
+        memberleft.setPreferredSize(new Dimension(75, 27));
+        memberright.setPreferredSize(new Dimension(75, 27));
+        memberarrow.setPreferredSize(new Dimension(25, 27));
         //Hinzufügen der Komponenten in das GridBagLayout
         gbc.gridx = 0;
         row = 0;
@@ -80,29 +84,32 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         gbc.weighty = 1.0;
         gbc.insets = new Insets(5, 5, 5, 5);
         c.add(desc1, gbc);
-        gbc.gridwidth=2;
-        gbc.gridx = 4;
+        gbc.gridwidth = 2;
+        gbc.gridx = 3;
         c.add(desc2, gbc);
         row++;
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.gridheight = 2;
-        gbc.gridwidth=3;
+        gbc.gridwidth = 3;
         c.add(j2, gbc);
-        gbc.gridx = 4;
+        gbc.gridx = 3;
         gbc.gridy = row;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         c.add(relationbeg, gbc);
-        gbc.gridx=5;
+        gbc.gridx = 4;
+        gbc.gridwidth = 2;
         c.add(relation, gbc);
-        gbc.gridx=6;
+        gbc.gridx = 6;
+        gbc.gridwidth = 1;
         c.add(relationend, gbc);
         row++;
-        gbc.gridx=5;
+        gbc.gridx = 4;
+        gbc.gridwidth = 2;
         gbc.gridy = row;
         c.add(addrelation, gbc);
-        row ++;
+        row++;
         gbc.ipady = 0;
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -114,9 +121,10 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         c.add(arrow, gbc);
         gbc.gridx = 2;
         c.add(right, gbc);
-        gbc.gridx = 4;
+        gbc.gridx = 3;
         c.add(add, gbc);
-        gbc.gridx = 5;
+        gbc.gridx = 4;
+        gbc.gridwidth = 2;
         c.add(delete, gbc);
         row++;
         gbc.gridwidth = 3;
@@ -125,7 +133,7 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         gbc.gridy = row;
         c.add(closure, gbc);
         gbc.gridx = 3;
-        gbc.gridwidth =1;
+        gbc.gridwidth = 1;
         c.add(closurefield, gbc);
         row++;
         gbc.gridx = 0;
@@ -134,7 +142,11 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         c.add(member, gbc);
         gbc.gridx = 3;
         gbc.gridwidth = 1;
-        c.add(memberbox, gbc);
+        c.add(memberleft, gbc);
+        gbc.gridx = 4;
+        c.add(memberarrow, gbc);
+        gbc.gridx = 5;
+        c.add(memberright, gbc);
         row++;
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -144,10 +156,10 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         gbc.gridy = row;
         c.add(execute, gbc);
         row++;
-        gbc.gridx = 4;
-        gbc.gridy = 4;
+        gbc.gridx = 7;
+        gbc.gridy = 0;
         gbc.gridwidth = 4;
-        gbc.gridheight = 5;
+        gbc.gridheight = 9;
         c.add(j3, gbc);
         function.setEditable(false);
         function.setText("Bitte trage die Relation in das rechte Feld, anschließend in die beiden Felder unten deine Abhängigkeiten der Funktion ein und füge sie"
@@ -157,25 +169,28 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         left.setEditable(false);
         right.setEditable(false);
         output.setText("Hier werden alle möglichen Outputs stehen.");
-        kl = new Komplettlistener(function, relation, output, add, delete, execute, addrelation, left, right, closure, member, overlay, closurefield, memberbox);
+        kl = new Komplettlistener(function, relation, output, add, delete, execute, addrelation, left, right, closure, member, overlay, closurefield, memberleft, memberright);
         closurefield.setVisible(false);
-        memberbox.setVisible(false);
+        memberleft.setVisible(false);
+        memberarrow.setVisible(false);
+        memberright.setVisible(false);
         //Listener für Buttons und Eingabefelder initialisieren
-        bg=new ButtonGroup();
+        bg = new ButtonGroup();
         bg.add(closure);
         bg.add(member);
         bg.add(overlay);
-        CheckBoxListener cbl = new CheckBoxListener(memberbox, closurefield, this, bg, closure, member, overlay);
+        CheckBoxListener cbl = new CheckBoxListener(memberleft, memberarrow, memberright, closurefield, this, bg, closure, member, overlay);
         closure.setName("closure");
         member.setName("member");
         overlay.setName("overlay");
         closure.addActionListener(cbl);
         member.addActionListener(cbl);
         overlay.addActionListener(cbl);
-        nthl = new NiceToHaveListener(add, execute, addrelation, closurefield, left, right, relation);
+        nthl = new NiceToHaveListener(add, execute, addrelation, closurefield, left, right, relation, memberright);
         right.addKeyListener(nthl);
         relation.addKeyListener(nthl);
         closurefield.addKeyListener(nthl);
+        memberright.addKeyListener(nthl);
         add.addActionListener(kl);
         delete.addActionListener(kl);
         execute.addActionListener(kl);

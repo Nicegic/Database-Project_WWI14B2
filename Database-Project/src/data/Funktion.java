@@ -13,19 +13,18 @@ import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class Funktion {
-    
+
     //stellt die Funktion dar
-    
     //das Alphabet / die Relation
     ConcurrentSkipListSet<String> attlist = new ConcurrentSkipListSet<>();
-    
+
     //die Liste der Abhängigkeiten, die die Funktion enthält
     HashSet<Abhaengigkeit> abhlist = new HashSet();
 
     //wird in den Algorithmen manchmal benutzt, daher notwendig
     public Funktion() {
     }
-    
+
     //erstellt eine Funktion mit Relation und Liste von Abhängigkeiten
     public Funktion(ConcurrentSkipListSet<String> attlist, HashSet<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
         this.attlist = new ConcurrentSkipListSet();
@@ -34,33 +33,32 @@ public class Funktion {
         addAbhaengigkeiten(abhaengigkeiten);
     }
 
-    //setzt 
+    //setzt das Alphabet / die Relation
     public void setAlphabet(ConcurrentSkipListSet<String> attlist) {
         this.attlist.clear();
         this.attlist.addAll(attlist);
     }
-    
+
     //um eine Liste mit Abhängigkeiten zur Funktion hinzuzufügen
     public void addAbhaengigkeiten(HashSet<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
-        this.abhlist.clear();
         Iterator it = abhaengigkeiten.iterator();
-        while(it.hasNext()){
-            addAbhaengigkeit((Abhaengigkeit)it.next());
+        while (it.hasNext()) {
+            addAbhaengigkeit((Abhaengigkeit) it.next());
         }
     }
-    
+
+    //fügt eine einzelne Abhängigkeit zur Liste hinzu
+    public void addAbhaengigkeit(Abhaengigkeit abh) {
+        abhlist.add(abh);
+    }
+
     //ersetzt die aktuelle Liste durch eine neue
     public void setAbhaengigkeiten(HashSet<Abhaengigkeit> abhaengigkeiten) {
         abhlist.clear();
         abhlist.addAll(abhaengigkeiten);
     }
-    
-    //fügt eine einzelne Abhängigkeit zur Liste hinzu
-    public void addAbhaengigkeit(Abhaengigkeit abh) {
-        abhlist.add(abh);
-    }
-    
-    public ConcurrentSkipListSet<String> getAlphabet(){
+
+    public ConcurrentSkipListSet<String> getAlphabet() {
         return attlist;
     }
 
@@ -85,7 +83,7 @@ public class Funktion {
     public void removeAbh(Abhaengigkeit abh, Funktion f) {
         abhlist.remove(abh);
     }
-    
+
     //löscht die letzte Abhängigkeit wieder aus der Liste (muss nicht die letzte eingegebene sein,
     //da die Abhängigkeiten in einem HashSet gespeichert werden!!!
     public void removeAbhaengigkeit() {
@@ -102,7 +100,7 @@ public class Funktion {
     public boolean keineAbhaengigkeiten() {
         return abhlist.isEmpty();
     }
-    
+
     //kopiert eine Funktion, sodass die Relation und alle Abhängigkeiten tiefenkopiert werden
     public Funktion copy() {
         HashSet<Abhaengigkeit> vabhlist = new HashSet();

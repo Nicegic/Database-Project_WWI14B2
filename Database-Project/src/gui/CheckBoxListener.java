@@ -5,12 +5,16 @@
  */
 package gui;
 
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -19,21 +23,23 @@ import javax.swing.JTextField;
  */
 public class CheckBoxListener implements ActionListener {   //Listener für die Auswahl von Closure, Member und Überdeckung
 
-    JComboBox memberbox;
     JCheckBox closure, member, cover;
-    JTextField closurefield;
+    JTextField closurefield, memberleft, memberright;
+    JLabel memberarrow;
     JFrame f;
     ButtonGroup bg;
     boolean wasSelected = false;
 
-    public CheckBoxListener(JComboBox memberbox, JTextField closurefield, JFrame f, ButtonGroup bg, JCheckBox closure, JCheckBox member, JCheckBox cover) {
+    public CheckBoxListener(JTextField memberleft, JLabel memberarrow, JTextField memberright, JTextField closurefield, JFrame f, ButtonGroup bg, JCheckBox closure, JCheckBox member, JCheckBox cover) {
         this.f = f;
-        this.memberbox = memberbox;
+        this.memberleft = memberleft;
+        this.memberright = memberright;
+        this.memberarrow = memberarrow;
         this.closurefield = closurefield;
         this.closure = closure;
         this.member = member;
         this.cover = cover;
-        this.bg=bg;
+        this.bg = bg;
     }
 
     public void actionPerformed(ActionEvent ae) {
@@ -43,31 +49,55 @@ public class CheckBoxListener implements ActionListener {   //Listener für die 
                 bg.clearSelection();
                 deselect();
             } else {
-                memberbox.setVisible(false);
-                closurefield.setVisible(true);
+                hideMember();
+                showClosure();
+                wasSelected=false;
             }
-        }
-        else if(ae.getSource().equals(member)){
-            if(memberbox.isVisible()){
+        } else if (ae.getSource().equals(member)) {
+            if (memberleft.isVisible()) {
                 deselect();
                 bg.clearSelection();
-            }else{
-                memberbox.setVisible(true);
-                closurefield.setVisible(false);
+            } else {
+                showMember();
+                hideClosure();
+                wasSelected=false;
+
             }
-        }else{
-            if(wasSelected){
+        } else {
+            if (wasSelected) {
                 bg.clearSelection();
                 wasSelected = false;
-            }else{
-                wasSelected=true;
+            } else {
+                deselect();
+                wasSelected = true;
             }
-            deselect();
         }
-            f.pack();
-        }
-    private void deselect(){
-        memberbox.setVisible(false);
+        f.pack();
+    }
+
+    private void deselect() {
+        hideClosure();
+        hideMember();
+        wasSelected=false;
+    }
+
+    private void showMember() {
+        memberleft.setVisible(true);
+        memberarrow.setVisible(true);
+        memberright.setVisible(true);
+    }
+
+    private void hideMember() {
+        memberleft.setVisible(false);
+        memberright.setVisible(false);
+        memberarrow.setVisible(false);
+    }
+
+    private void showClosure() {
+        closurefield.setVisible(true);
+    }
+
+    private void hideClosure() {
         closurefield.setVisible(false);
     }
 }

@@ -27,19 +27,18 @@ class Komplettlistener implements ActionListener {
 
     JTextArea function, output;
     JButton add, delete, execute, addrelation;
-    JTextField left, right, relation, closurefield;
+    JTextField left, right, relation, closurefield, memberleft, memberright;
     ConcurrentSkipListSet<String> attlist;
     JCheckBox closure, member, overlay;
     Funktion f;
     public static boolean relationchanged;
     boolean firsttime;
     String relationlast, huelle;
-    JComboBox<Object> memberbox;
     Membership m = new Membership();
 
     public Komplettlistener(JTextArea function, JTextField relation, JTextArea output,
             JButton add, JButton delete, JButton execute, JButton addrelation, JTextField left, JTextField right,
-            JCheckBox closure, JCheckBox member, JCheckBox overlay, JTextField closurefield, JComboBox memberbox) {
+            JCheckBox closure, JCheckBox member, JCheckBox overlay, JTextField closurefield, JTextField memberleft, JTextField memberright) {
         this.function = function;
         this.relation = relation;
         this.output = output;
@@ -53,7 +52,8 @@ class Komplettlistener implements ActionListener {
         this.member = member;
         this.overlay = overlay;
         this.closurefield = closurefield;
-        this.memberbox = memberbox;
+        this.memberleft = memberleft;
+        this.memberright = memberright;
         f = new Funktion();
         relationchanged = false;
         firsttime = true;
@@ -63,12 +63,13 @@ class Komplettlistener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (relationchanged) {  //wenn die Relation geändert wurde, muss diese neu gebildet und zwischen-
-                                //gespeichert werden
+            //gespeichert werden
             try {
                 buildRelation();
-                if(!firsttime)
+                if (!firsttime) {
                     forceValidation();
-                firsttime=false;
+                }
+                firsttime = false;
             } catch (IllegalEntryException iee) {
                 output.setText(iee.getMessage());
             }
@@ -110,11 +111,9 @@ class Komplettlistener implements ActionListener {
             } else {
                 sb.append("Die Funktion beinhaltet momentan folgende Abhängigkeiten: \n");
                 HashSet<Abhaengigkeit> abhlist = f.getAbhaengigkeiten();
-                memberbox.removeAllItems();
                 Iterator it = abhlist.iterator();
                 while (it.hasNext()) {
                     Abhaengigkeit abh = (Abhaengigkeit) it.next();
-                    memberbox.addItem(abh);
                     sb.append(abh + " \n");
                 }
             }
@@ -128,11 +127,17 @@ class Komplettlistener implements ActionListener {
                 doMember();
             } else if (overlay.isSelected()) {
                 doOverlay();
+            }else{
+                output.setText("Bitte wähle einen der drei Algorithmen aus!");
             }
         }
     }
 
     private void doClosure() {  //Ausführen des Closure-Algorithmus
+        if(checkEmpty()){
+            output.setText("Bitte trage erst eine Relation bzw. mindestens eine Abhängigkeit ein, um den Algorithmus durchführen zu können!");
+            return;
+        }
         output.setText("");
         m.getOutput(output);
         if (attlist != null) {
@@ -144,36 +149,48 @@ class Komplettlistener implements ActionListener {
             Abhaengigkeit abh = null;
             try {
                 abh = new Abhaengigkeit(huelle, attlist, null);
-            } catch (NotInAlphabetException niae) {}
+            } catch (NotInAlphabetException niae) {
+            }
             if (abh == null) {
                 output.setText("Bitte eine gültige Hülle eingeben!");
                 return;
             }
             HashSet<String> result = m.closure(f, abh.getLeft());
-            output.setText(output.getText()+"\nDas Ergebnis der Closure-Funktion ist: "+result.toString());
+            output.setText(output.getText() + "\nDas Ergebnis der Closure-Funktion ist: " + result.toString());
             //Ausgabe des Ergebnisses des Closure-Algorithus im Output-Feld
         }
     }
 
     private void doMember() {   //Ausführung des Membership-Algorithmus
-        int i = memberbox.getSelectedIndex();
-        output.setText("");
-        m.getOutput(output);
-        boolean result = m.member(f, f.getAbhaengigkeit(i));
-        output.setText(output.getText()+"\n"+ result);
-
+        if(checkEmpty()){
+            output.setText("Bitte trage erst eine Relation bzw. mindestens eine Abhängigkeit ein, um den Algorithmus durchführen zu können!");
+            return;
+        }
+        try {
+            Abhaengigkeit abh = new Abhaengigkeit(memberleft.getText(), memberright.getText(), f.getAlphabet());
+            output.setText("");
+            m.getOutput(output);
+            boolean result = m.member(f, abh);
+            output.setText(output.getText() + "\n" + result);
+        }catch(NotInAlphabetException niae){
+            output.setText(niae.getMessage());
+        }
     }
 
     private void doOverlay() {  //Ausführung des Algorithmus für die minimale Überdeckung
+        if(checkEmpty()){
+            output.setText("Es sind keine Abhängigkeiten vorhanden, für die eine Überdeckung berechnet werden kann!");
+            return;
+        }
         output.setText("");
         m.getOutput(output);
-        Funktion g=m.reducedCover(f);
+        Funktion g = m.reducedCover(f);
         StringBuffer abh = new StringBuffer();
         for (int i = 0; i < g.getAbhSize(); i++) {
             abh = abh.append(g.getAbhaengigkeit(i) + "\n");
         }
         function.setText("Neue Abhaengigkeiten:\n" + abh.toString());
-        output.setText(output.getText()+"\nÜberdeckung durgeführt");
+        output.setText(output.getText() + "\nÜberdeckung durgeführt");
     }
 
     private void buildRelation() throws IllegalEntryException {
@@ -183,26 +200,36 @@ class Komplettlistener implements ActionListener {
         left.setEditable(true);
         right.setEditable(true);
     }
-    
-    private void forceValidation(){
+
+    private void forceValidation() {
         //wenn die Relation geändert wird, müssen die Abhängigkeiten erneut auf Richtigkeit geprüft werden
         HashSet abhlist = new HashSet();
         abhlist.addAll(f.getAbhaengigkeiten());
         Iterator it = abhlist.iterator();
-        String left,right;
+        String left, right;
         StringBuffer result = new StringBuffer("Es wurden Abhängigkeiten entfernt, da sie nicht zum neuen Alphabet konform sind: \n");
-        while(it.hasNext()){
-            Abhaengigkeit abh = (Abhaengigkeit)it.next();
+        while (it.hasNext()) {
+            Abhaengigkeit abh = (Abhaengigkeit) it.next();
             left = abh.getLeftString();
             right = abh.getRightString();
-            try{
-                Abhaengigkeit neu = new Abhaengigkeit(left,right,f.getAlphabet());
-            }catch(NotInAlphabetException niae){
+            try {
+                Abhaengigkeit neu = new Abhaengigkeit(left, right, f.getAlphabet());
+            } catch (NotInAlphabetException niae) {
                 f.removeAbh(abh, f);
-                result.append(abh+" \n");
+                result.append(abh + " \n");
             }
         }
-        if(result.length()>85)
+        if (result.length() > 85) {
             function.setText(result.toString());
+        }
+    }
+    
+    private boolean checkEmpty(){
+        if(f.getAlphabet().isEmpty()||f.keineAbhaengigkeiten()){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
