@@ -9,13 +9,10 @@ package database.project;
  *
  * @author Nicolas
  */
-public class DatabaseProject {
+public class DatabaseProject {  //Die Startklasse
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        new gui.GuiNew();
+        new gui.GuiNew();   //ruft die GUI auf
     }
     
 }

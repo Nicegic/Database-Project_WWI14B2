@@ -10,6 +10,7 @@ package data;
  * @author Nicolas
  */
 public class IllegalEntryException extends Exception{
+    //wird geworfen, wenn die Relation ungültige Zeichen enthält und sie deshalb nicht erstellt werden kann
     String message;
     public IllegalEntryException(){
         super();

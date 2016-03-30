@@ -10,6 +10,8 @@ package data;
  * @author Nicolas
  */
 public class NotInAlphabetException extends Exception{
+    //diese Exception wird geworfen, wenn eine Seite der Abhängigkeit Elemente enthält,
+    //die nicht im Alphabet / in der Relation der Funktion vorhanden sind
     public NotInAlphabetException(){
         super();
     }

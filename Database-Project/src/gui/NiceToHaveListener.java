@@ -14,6 +14,7 @@ import java.awt.event.*;
  * @author Nicolas
  */
 class NiceToHaveListener implements KeyListener {
+    //Listener, um die Eingabe in den Eingabefeldern etwas angenehmer zu gestalten
 
     JButton add, execute, addrelation;
     JTextField right, relation, closurefield, left;
@@ -31,6 +32,8 @@ class NiceToHaveListener implements KeyListener {
     }
 
     public void keyPressed(KeyEvent ke) {
+        //wenn in dem Eingabefeld ENTER gedrückt wird, wird der Button aktiviert
+        //falls die Relation nachträglich geändert wird, werden die Abhängigkeitsfelder deaktiviert
         if(ke.getComponent().equals(relation)){
             if(ke.getKeyCode() == KeyEvent.VK_ENTER){
                 addrelation.doClick();

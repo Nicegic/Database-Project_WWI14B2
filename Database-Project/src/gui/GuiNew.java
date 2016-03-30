@@ -11,9 +11,9 @@ import java.awt.Insets;
  *
  * @author Nicolas
  */
-public class GuiNew extends JFrame {
+public class GuiNew extends JFrame {    // Die GUI-Klasse
 
-    GridBagLayout gbl;
+    GridBagLayout gbl;                  //Diverse Container zum Arrangieren der Felder
     GridBagConstraints gbc;
     JTextField left, right, relation, closurefield;
     JLabel arrow, desc1, desc2, relationbeg, relationend;
@@ -28,7 +28,7 @@ public class GuiNew extends JFrame {
     ButtonGroup bg;
     JComboBox<Object> memberbox;
 
-    public GuiNew() {
+    public GuiNew() {       //Initialisierung der GUI
         row = 0;
         c = getContentPane();
         gbl = new GridBagLayout();
@@ -48,7 +48,7 @@ public class GuiNew extends JFrame {
         overlay = new JCheckBox("reduzierte Überdeckung");
         closure = new JCheckBox("Closure-Funktion (Hülle bestimmen)");
         member = new JCheckBox("Membership-Algorithmus durchführen");
-        closurefield = new JTextField("Test ClosureLabel");
+        closurefield = new JTextField("mögl. Schlüsselattribut");
         memberbox = new JComboBox<>();
         relationbeg = new JLabel("R={");
         relationend = new JLabel("}");
@@ -70,6 +70,7 @@ public class GuiNew extends JFrame {
         right.setPreferredSize(new Dimension(75,27));
         arrow.setPreferredSize(new Dimension(25,27));
         arrow.setHorizontalTextPosition(JLabel.CENTER);
+        //Hinzufügen der Komponenten in das GridBagLayout
         gbc.gridx = 0;
         row = 0;
         gbc.gridy = row;
@@ -149,7 +150,7 @@ public class GuiNew extends JFrame {
         gbc.gridheight = 5;
         c.add(j3, gbc);
         function.setEditable(false);
-        function.setText("Bitte trage die Relation in das rechte Feld ein, anschließend in die beiden Felder unten deine Abhängigkeiten der Funktion ein und füge sie"
+        function.setText("Bitte trage die Relation in das rechte Feld, anschließend in die beiden Felder unten deine Abhängigkeiten der Funktion ein und füge sie"
                 + " mit Klick auf 'hinzufügen' zur Funktion hinzu. Mit löschen kann jeweils die letzte Abhängigkeit"
                 + " gelöscht werden.");
         output.setEditable(false);
@@ -159,6 +160,7 @@ public class GuiNew extends JFrame {
         kl = new Komplettlistener(function, relation, output, add, delete, execute, addrelation, left, right, closure, member, overlay, closurefield, memberbox);
         closurefield.setVisible(false);
         memberbox.setVisible(false);
+        //Listener für Buttons und Eingabefelder initialisieren
         bg=new ButtonGroup();
         bg.add(closure);
         bg.add(member);
@@ -178,6 +180,7 @@ public class GuiNew extends JFrame {
         delete.addActionListener(kl);
         execute.addActionListener(kl);
         addrelation.addActionListener(kl);
+        //abschließende Veränderungen am Fenster
         setLocation(200, 100);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

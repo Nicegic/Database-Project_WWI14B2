@@ -17,7 +17,7 @@ import javax.swing.JTextField;
  *
  * @author Nicolas
  */
-public class CheckBoxListener implements ActionListener {
+public class CheckBoxListener implements ActionListener {   //Listener für die Auswahl von Closure, Member und Überdeckung
 
     JComboBox memberbox;
     JCheckBox closure, member, cover;
@@ -37,6 +37,7 @@ public class CheckBoxListener implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent ae) {
+        //Zum Anzeigen der spezifischen Eingabefelder und Verschönerung der Auswahl
         if (ae.getSource().equals(closure)) {
             if (closurefield.isVisible()) {
                 bg.clearSelection();

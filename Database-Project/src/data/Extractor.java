@@ -9,22 +9,17 @@ package data;
  *
  * @author Nicolas
  */
-import data.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class Extractor {
+public class Extractor {    //dient zur Umwandlung der Eingabe in die Relation/das Alphabet
 
-    String huelle;
     StringTokenizer st;
-
-    public void setHuelle(String huelle) {
-        this.huelle = huelle;
-    }
 
     public ConcurrentSkipListSet<String> buildRelation(String relationS) throws IllegalEntryException {
         ConcurrentSkipListSet<String> relation;
         relation = new ConcurrentSkipListSet();
+        //Die Relation muss mindestens 2 Elemente beinhalten
         if (relationS.length() < 2) {
             throw new IllegalEntryException("Die Relation muss mindestens 2 Elemente enthalten!");
         }
