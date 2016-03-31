@@ -10,64 +10,129 @@ package data;
  * @author Nicolas
  */
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
+import javax.swing.text.html.HTMLDocument;
 
 public class Funktion {
 
-    ArrayList<String> Attributliste = new ArrayList<String>();
-    ArrayList<Abhaengigkeit> Abhaengigkeitenliste = new ArrayList<Abhaengigkeit>();
-    String attribut;
-    StringBuffer alphabet = new StringBuffer();
+    //stellt die Funktion dar
+    //das Alphabet / die Relation
+    ConcurrentSkipListSet<String> attlist = new ConcurrentSkipListSet<>();
 
-    public Funktion(ArrayList<String> alphabet, ArrayList<Abhaengigkeit> abhaengigkeiten) {
-        for (int i = 0; i < alphabet.size(); i++) {
-            this.alphabet.append(alphabet.get(i));
-        }
+    //die Liste der Abhängigkeiten, die die Funktion enthält
+    HashSet<Abhaengigkeit> abhlist = new HashSet();
+
+    //wird in den Algorithmen manchmal benutzt, daher notwendig
+    public Funktion() {
+    }
+
+    //erstellt eine Funktion mit Relation und Liste von Abhängigkeiten
+    public Funktion(ConcurrentSkipListSet<String> attlist, HashSet<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
+        this.attlist = new ConcurrentSkipListSet();
+        this.abhlist = new HashSet();
+        setAlphabet(this.attlist);
         addAbhaengigkeiten(abhaengigkeiten);
     }
 
-    public void addAbhaengigkeiten(ArrayList<Abhaengigkeit> abhaengigkeiten) {
-        boolean left;
-        boolean right;
-        String alphabetS = this.alphabet.toString();
-        for (int i = 0; i < abhaengigkeiten.size(); i++) {
-            right = left = true;
-            Abhaengigkeit ab = abhaengigkeiten.get(i);
-            for (int j = 0; j < ab.linkeSeite.length(); j++) {
-                if (!alphabetS.contains("" + ab.linkeSeite.charAt(j))) {
-                    left = false;
-                }
-            }
-            for (int j = 0; j < ab.rechteSeite.length(); j++) {
-                if (!alphabetS.contains("" + ab.rechteSeite.charAt(j))) {
-                    right = false;
-                }
-            }
-            if (!left) {
-                System.out.println("Linke Seite der AbhÃ¤ngigkeit nicht in der Relation vorhanden!");
-            } else if (!right) {
-                System.out.println("Rechte Seite der AbhÃ¤ngigkeit nicht in der Relation vorhanden!");
-            } else {
-                Abhaengigkeitenliste.add(ab);
-            }
-        }
-        for (int i = 0; i < Abhaengigkeitenliste.size(); i++) {
-            System.out.println(Abhaengigkeitenliste.get(i));
+    //setzt das Alphabet / die Relation
+    public void setAlphabet(ConcurrentSkipListSet<String> attlist) {
+        this.attlist.clear();
+        this.attlist.addAll(attlist);
+    }
+
+    //um eine Liste mit Abhängigkeiten zur Funktion hinzuzufügen
+    public void addAbhaengigkeiten(HashSet<Abhaengigkeit> abhaengigkeiten) throws NotInAlphabetException {
+        Iterator it = abhaengigkeiten.iterator();
+        while (it.hasNext()) {
+            addAbhaengigkeit((Abhaengigkeit) it.next());
         }
     }
 
-    public ArrayList<Abhaengigkeit> getList() {
-        return Abhaengigkeitenliste;
+    //fügt eine einzelne Abhängigkeit zur Liste hinzu
+    public void addAbhaengigkeit(Abhaengigkeit abh) {
+        abhlist.add(abh);
+    }
+
+    //ersetzt die aktuelle Liste durch eine neue
+    public void setAbhaengigkeiten(HashSet<Abhaengigkeit> abhaengigkeiten) {
+        abhlist.clear();
+        abhlist.addAll(abhaengigkeiten);
+    }
+
+    public ConcurrentSkipListSet<String> getAlphabet() {
+        return attlist;
     }
 
     public int getAttSize() {
-        return Attributliste.size();
+        return attlist.size();
     }
 
     public int getAbhSize() {
-        return Abhaengigkeitenliste.size();
+        return abhlist.size();
     }
 
     public Abhaengigkeit getAbhaengigkeit(int i) {
-        return Abhaengigkeitenliste.get(i);
+        int k = 0;
+        Iterator it = abhlist.iterator();
+        while (k < i) {
+            it.next();
+            k++;
+        }
+        return (Abhaengigkeit) it.next();
+    }
+
+    public void removeAbh(Abhaengigkeit abh, Funktion f) {
+        abhlist.remove(abh);
+    }
+
+    //löscht die letzte Abhängigkeit wieder aus der Liste (muss nicht die letzte eingegebene sein,
+    //da die Abhängigkeiten in einem HashSet gespeichert werden!!!
+    public void removeAbhaengigkeit() {
+        Abhaengigkeit abh = null;
+        Iterator it = abhlist.iterator();
+        while (it.hasNext()) {
+            abh = (Abhaengigkeit) it.next();
+        }
+        if (abh != null) {
+            abhlist.remove(abh);
+        }
+    }
+
+    public boolean keineAbhaengigkeiten() {
+        return abhlist.isEmpty();
+    }
+
+    //kopiert eine Funktion, sodass die Relation und alle Abhängigkeiten tiefenkopiert werden
+    public Funktion copy() {
+        HashSet<Abhaengigkeit> vabhlist = new HashSet();
+        ConcurrentSkipListSet<String> vattlist = new ConcurrentSkipListSet();
+        Funktion f = null;
+        vabhlist.addAll(abhlist);
+        vattlist.addAll(attlist);
+        try {
+            f = new Funktion(vattlist, vabhlist);
+            return f;
+        } catch (NotInAlphabetException niae) {
+            return null;
+        }
+    }
+
+    public HashSet<Abhaengigkeit> getAbhaengigkeiten() {
+        return abhlist;
+    }
+    
+    //Methode zur Übergabe der Textarea in welche die Informationen der Algorithmen geschrieben werden sollen
+    @Override
+    public String toString(){
+        String text="F={";
+        Iterator it = abhlist.iterator();
+        while(it.hasNext()) {
+            text=text+it.next();
+            if(it.hasNext()){
+                text=text+", ";
+            }
+        }
+        text=text+"}";
+        return text;
     }
 }
