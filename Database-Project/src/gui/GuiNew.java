@@ -68,8 +68,8 @@ public class GuiNew extends JFrame {    // Die GUI-Klasse
         j3.setPreferredSize(new Dimension(400, 150));
         relation.setPreferredSize(new Dimension(200, 27));
         left.setPreferredSize(new Dimension(75, 27));
-        right.setPreferredSize(new Dimension(75, 27));
         arrow.setPreferredSize(new Dimension(25, 27));
+        right.setPreferredSize(new Dimension(75, 27));
         closurefield.setPreferredSize(new Dimension(75, 27));
         memberleft.setPreferredSize(new Dimension(75, 27));
         memberright.setPreferredSize(new Dimension(75, 27));

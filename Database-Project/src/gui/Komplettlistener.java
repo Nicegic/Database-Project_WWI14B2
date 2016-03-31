@@ -171,7 +171,7 @@ class Komplettlistener implements ActionListener {
             output.setText("");
             m.getOutput(output);
             boolean result = m.member(f, abh);
-            output.setText(output.getText() + "\n" + result);
+            output.setText(output.getText() + "\nDer Membership-Algorithmus ergibt " + result);
         }catch(NotInAlphabetException niae){
             output.setText(niae.getMessage());
         }

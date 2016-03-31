@@ -17,40 +17,54 @@ public class Membership {
     //die Hauptklasse, die die drei Algorithmen für Closure, Membership und Überdeckung enthält
     
     JTextArea output;
+    boolean nooutput=false;
     
+    //Methode zur Übergabe der Textarea in welche die Informationen der Algorithmen geschrieben werden sollen
     public void getOutput(JTextArea output){
         this.output=output;
     }
     
     //Membership-Algorithmus
     public boolean member(Funktion F, Abhaengigkeit a) {
-        output.setText("Durchführung des Membership-Algorhythmus mit: F = "+F.toString()+" und der Abhaengigkeit a = "+a+"\n");
+        output.setText("Durchführung des Membership-Algorhythmus mit: "+F.toString()+" und der Abhaengigkeit a = "+a+"\n");
         return closure(F, a.links).containsAll(a.rechts);
     }
     
     //Closure-Algorithmus
     public HashSet<String> closure(Funktion F, Set<String> left) {
-        output.setText(output.getText()+"Durchführung des Closure-Algorhythmus mit: F="+F+" und der Hülle h="+left+"\n");
+        if(!nooutput){
+            output.setText(output.getText()+"Durchführung des Closure-Algorhythmus mit: "+F+" und der Hülle h="+left+"\n");
+        }
         HashSet abhlist = F.getAbhaengigkeiten();
         HashSet listx = new HashSet();
         listx.addAll(left);
         HashSet listxx = new HashSet();
         //Hülle und Abhängigkeitenliste werden kopiert
-        output.setText(output.getText()+"Eine Kopie der Hülle wurde gespeichert.\n");
+        if(!nooutput){
+            output.setText(output.getText()+"Eine Kopie der Hülle wurde gespeichert.\n");
+        }
         //solange listx und listxx ungleich sind
         do {
-            output.setText(output.getText()+"Berechnung der Hülle mit: "+listx+"\n");
+            if(!nooutput){
+                output.setText(output.getText()+"Berechnung der Hülle mit: "+listx+"\n");
+            }
             listxx.addAll(listx);
             //listxx und listx werden auf den gleichen Stand gebracht
-            output.setText(output.getText()+"Die Ableitungsregel R wurde angewandt.\n");
+            if(!nooutput){
+                output.setText(output.getText()+"Die Ableitungsregel R wurde angewandt.\n");
+            }
             Iterator it = abhlist.iterator();
             while (it.hasNext()) {
                 Abhaengigkeit abh = (Abhaengigkeit) it.next();
-                output.setText(output.getText()+"Prüfen, ob Y teilmenge von X* ist. Ergebnis= "+listx.containsAll(abh.links)+"\n");
+                if(!nooutput){
+                    output.setText(output.getText()+"Prüfen, ob Y teilmenge von X* ist. Ergebnis= "+listx.containsAll(abh.links)+"\n");
+                }
                 //wenn listx die linke Seite der Abhängigkeit vollständig enthält, wird die rechte Seite hinzugefügt
                 if (listx.containsAll(abh.links)) {
                     listx.addAll(abh.rechts);
-                    output.setText(output.getText()+"Ableitungsregel A wurde angeandt.\n");
+                    if(!nooutput){
+                        output.setText(output.getText()+"Ableitungsregel A wurde angeandt.\n");
+                    }
                 }
             }
         } while (!listx.equals(listxx));
@@ -59,6 +73,7 @@ public class Membership {
     
     //minimale Überdeckung - Algorithmus
     public Funktion reducedCover(Funktion F) {
+        nooutput=true;
         //Kopie der Funktion durchführen
         Funktion G = F.copy();
         HashSet abhlist = new HashSet();
@@ -79,17 +94,17 @@ public class Membership {
             Iterator iter = sidelist.iterator();
             while (iter.hasNext()) {
                 String s = (String) iter.next();
-                output.setText(output.getText()+"Prüfen, ob "+s+"unwesentlich ist.\n");
                 worklist.remove(s);
-                output.setText(output.getText()+"Prüfen, ob Y teilmenge von CLOSURE(F,X-"+s+") ist. Ergebnis: "+closure(G, worklist).containsAll(abh.rechts)+"\n");
                 if (closure(G, worklist).containsAll(abh.rechts)) {
+                    output.setText(output.getText()+"Die linke Seite der Abhängigkeit wurde von "+abh.getLeftString()+" auf ");
                     abh.setLeft(worklist);
+                    output.setText(output.getText()+abh.getLeftString()+" reduziert.\n");
                 } else {
                     worklist.add(s);
                 }
             }
         }
-        output.setText(output.getText()+"Nach Linksüberdeckung " +abhlist+"\n");
+        output.setText(output.getText()+"Nach Linksreduktion " +abhlist+"\n");
         it = abhlist.iterator();
         //2. Durchgang
         //Rechtsreduktion
@@ -107,15 +122,23 @@ public class Membership {
                 help.setRight(abh.rechts);
                 G.removeAbh(abh, G);
                 String s = (String) iter.next();
-                output.setText(output.getText()+"Prüfen, ob "+s+"unwesentlich ist.\n");
                 worklist.remove(s);
                 abh.setRight(worklist);
                 G.addAbhaengigkeit(abh);
-                output.setText(output.getText()+"Prüfen, ob Y teilmenge von CLOSURE(F-{"+help+"}U{"+help+"-"+s+"},X) ist. Ergebnis: "+(!closure(G, abh.links).contains(s))+"\n");
                 if (!closure(G, abh.links).contains(s)) {
                     G.removeAbh(abh, G);
                     abh.setRight(help.rechts);
                     G.addAbhaengigkeit(abh);
+                }
+                else{
+                    output.setText(output.getText()+"Die rechte Seite der Abhängigkeit wurde von "+help.getRightString()+" auf ");
+                    if(abh.getRightString().equals("")){
+                        output.setText(output.getText()+"[]");
+                    }
+                    else{
+                        output.setText(output.getText()+abh.getRightString());
+                    }
+                    output.setText(output.getText()+" reduziert.\n");
                 }
             }
         }
@@ -168,6 +191,7 @@ public class Membership {
         }
         G.setAbhaengigkeiten(worklist);
         output.setText(output.getText()+"Reduktion durchgeführt.\n");
+        nooutput=false;
         return G;
     }
 }

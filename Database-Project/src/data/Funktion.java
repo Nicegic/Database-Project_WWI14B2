@@ -11,6 +11,7 @@ package data;
  */
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
+import javax.swing.text.html.HTMLDocument;
 
 public class Funktion {
 
@@ -118,5 +119,20 @@ public class Funktion {
 
     public HashSet<Abhaengigkeit> getAbhaengigkeiten() {
         return abhlist;
+    }
+    
+    //Methode zur Übergabe der Textarea in welche die Informationen der Algorithmen geschrieben werden sollen
+    @Override
+    public String toString(){
+        String text="F={";
+        Iterator it = abhlist.iterator();
+        while(it.hasNext()) {
+            text=text+it.next();
+            if(it.hasNext()){
+                text=text+", ";
+            }
+        }
+        text=text+"}";
+        return text;
     }
 }
